@@ -1,7 +1,7 @@
 services:
   elevatorsservice:
     build:
-      context: c:/Users/OMISTAJA/Code/Microservices/ElevetorsServices
+      context: ./ElevetorsServices
       dockerfile: ElevatorServiceContainer.Dockerfile
     container_name: Elevators
     environment:
@@ -15,7 +15,7 @@ services:
 
   microservices:
     build:
-      context: c:/Users/OMISTAJA/Code/Microservices/Microservices
+      context: ./Microservices
       dockerfile: WebApiServiceContainer.Dockerfile
     container_name: Microservices
     environment:

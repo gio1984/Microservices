@@ -1,0 +1,35 @@
+services:
+  elevatorsservice:
+    build:
+      context: c:/Users/OMISTAJA/Code/Microservices/ElevetorsServices
+      dockerfile: ElevatorServiceContainer.Dockerfile
+    container_name: Elevators
+    environment:
+      - SERVICE_URL=http://microservices:80
+      - API_KEY=secret
+    networks:
+      - net-elevators
+      - shared-net
+    depends_on:
+      - microservices
+
+  microservices:
+    build:
+      context: c:/Users/OMISTAJA/Code/Microservices/Microservices
+      dockerfile: WebApiServiceContainer.Dockerfile
+    container_name: Microservices
+    environment:
+      - API_KEY=secret
+    ports:
+      - "5000:80"
+    networks:
+      - net-microservices
+      - shared-net
+
+networks:
+  net-elevators:
+    driver: bridge
+  net-microservices:
+    driver: bridge
+  shared-net:
+    driver: bridge

@@ -1,0 +1,6 @@
+@DoorsServices_HostAddress = http://localhost:5102
+
+GET {{DoorsServices_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

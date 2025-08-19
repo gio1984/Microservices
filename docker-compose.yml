@@ -1,29 +1,121 @@
 services:
   elevatorsservice:
     build:
-      context: ./ElevetorsServices
+      context: ./ElevatorsService
       dockerfile: ElevatorServiceContainer.Dockerfile
     container_name: Elevators
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
-      - SERVICE_URL=http://microservices:80
+      - SERVICE_URL=http://webapi:80
       - API_KEY=secret
     networks:
       - net-elevators
       - shared-net
-    depends_on:
-      - microservices
+    #depends_on:
+    #  - webapi
 
-  microservices:
+  doorsservice:
     build:
-      context: ./Microservices
+      context: ./DoorsService
+      dockerfile: DoorsServiceContainer.Dockerfile
+    container_name: Doors
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - SERVICE_URL=http://webapi:80
+      - API_KEY=secret
+    networks:
+      - net-doors
+      - shared-net
+    depends_on:
+      - webapi
+
+  smokedetectorsservice:
+    build:
+      context: ./SmokeDetectorsService
+      dockerfile: SmokeDetectorsServiceContainer.Dockerfile
+    container_name: SmokeDetectors
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - SERVICE_URL=http://webapi:80
+      - API_KEY=secret
+    networks:
+      - net-smoke-detectors
+      - shared-net
+  #   depends_on:
+  #     - webapi
+
+  webapi:
+    build:
+      context: ./WebApi
       dockerfile: WebApiServiceContainer.Dockerfile
-    container_name: Microservices
+    container_name: Webapi
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       - API_KEY=secret
     ports:
       - "5000:80"
     networks:
       - net-microservices
+      - shared-net
+    depends_on:
+      - db
+
+  webapitests:
+    build:
+      context: ./WebApi.Tests
+      dockerfile: WebApiTest.Dockerfile
+    container_name: WebApiTests
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    networks:
+      - shared-net
+
+  frontend:
+      build:
+        context: ./FrontEnd
+        dockerfile: FrontEndContainer.Dockerfile
+      container_name: FrontEnd
+      deploy:
+        resources:
+          limits:
+            memory: 512M
+      ports:
+        - "8080:80"
+      environment:
+        - SERVICE_URL=http://webapi:80
+        - API_KEY=secret
+      networks:
+        - shared-net
+      #depends_on:
+      #  - webapi
+
+  db:
+    image: postgres:latest
+    container_name: devices-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=devicesdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - net-elevators
       - shared-net
 
 networks:
@@ -33,3 +125,10 @@ networks:
     driver: bridge
   shared-net:
     driver: bridge
+  net-doors:
+    driver: bridge
+  net-smoke-detectors:
+    driver: bridge
+
+volumes:
+  db_data:

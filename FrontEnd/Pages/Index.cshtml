@@ -1,0 +1,73 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to the building managment portal</h1>
+</div>
+
+<h2>Doors Status</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Door ID</th>
+            <th>Status</th>
+            <th>Event Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var door in Model.ApiResponseDoors)
+        {
+            <tr>
+                <td>@door.DoorId</td>
+                <td>@door.Status</td>
+                <td>@door.EventIdUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Elevator Status</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Elevator ID</th>
+            <th>Floor</th>
+            <th>Status</th>
+            <th>Event Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var elevator in Model.ApiResponseElevators)
+        {
+            <tr>
+                <td>@elevator.ElevatorId</td>
+                <td>@elevator.Floor</td>
+                <td>@elevator.Status</td>
+                <td>@elevator.EventIdUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h2>Smoke Detectors Status</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Detector ID</th>
+            <th>Status</th>
+            <th>Event Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detector in Model.ApiResponseSmokeDetectors)
+        {
+            <tr>
+                <td>@detector.DetectorId</td>
+                <td>@detector.Status</td>
+                <td>@detector.EventIdUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>
